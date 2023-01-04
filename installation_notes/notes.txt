@@ -1,0 +1,26 @@
+Issues:
+
+make sure to install R and the packages in install.r
+
+1)
+For users of MacOS Mojave, there will be issues with the compilation of the pcalg R package required to run the causal module. How to solve them
+
+https://thecoatlessprofessor.com/programming/rcpp-rcpparmadillo-and-os-x-mavericks--lgfortran-and--lquadmath-error/#after-r-3-4-0
+Install the V8 using brew: http://macappstore.org/v8/
+install v8 in R: install.packages('v8')
+
+also install 'pcalg', kpcalg, RCIT 
+
+
+
+2)
+There are issues with the detection of R script. In order to solve them we need to do the following:
+Find R's location using R.home()
+Add the R home location as RSCRIPT_PATH environment variable by appending the following to your ~./bashrc, or ~/.zshrc file (depends on the terminal you are using) and then restart it:
+export RSCRIPT_PATH="REPLACE WITH YOUR R.home() location"
+
+3)
+There was an issue of DoWhy asking whether you want to continue with confounders. The old solution was to replace the file causal_identifier.py in site-packages/dowhy with the causal_identifier.py in installation notes. I don't think this is happening any more.
+
+***RSCRIPT UPDATE for CDT Package****
+

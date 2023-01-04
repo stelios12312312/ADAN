@@ -1,0 +1,25 @@
+FROM ubuntu:18.04
+
+# Setup
+RUN apt update && apt -y upgrade
+# RUN add-apt-repository ppa:dea/dsnakes/ppa
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y  software-properties-common r-base libv8-dev libcurl4-openssl-dev libxml2-dev python3.6 python3-pip
+
+# Installing dependencies
+RUN pip3 install numpy sklearn minepy pandas numba deap pathos pyswarm sympy shap mlxtend cdt torch
+
+VOLUME /adan
+WORKDIR /adan
+
+ENV DATASETS_DIR=/adan/datatests
+
+
+# Scripts to execute after mounting:
+
+# Making dowhy globally accessible
+# ln -s /adan/dowhy/dowhy /usr/lib/python3.6/dowhy
+
+# R commands to install dependencies
+
+# Rscript install.r

@@ -1,0 +1,3 @@
+https://archive.ics.uci.edu/ml/datasets/Heart+Disease
+
+the original UCI dataset was in a poor format so I downloaded from http://www.cs.umb.edu/~rickb/files/UCI/heart-c.txt

@@ -1,0 +1,1 @@
+Notes from https://archive.ics.uci.edu/ml/datasets/Waveform+Database+Generator+%28Version+2%29
