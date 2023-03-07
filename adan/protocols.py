@@ -916,7 +916,8 @@ def perform_ml_test(df,target_name,task,fix_skew):
     return score
     
 
-def run_automl_models(df,target_name,task,fix_skew=False,num_iterations=20,reference_class=1):    
+def run_automl_models(df:pd.DataFrame,target_name:str,task:str,fix_skew:bool=False,num_iterations:int=20,
+                      reference_class:int=1):    
     
     df2, target,scaler,centerer,categorical_vars,filler,log,\
     target_category_mapper,numerical_cols,components,pca_object,bad_target_values=\

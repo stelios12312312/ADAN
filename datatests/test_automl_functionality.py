@@ -12,7 +12,7 @@ sys.path.append(lib_path)
 from adan.protocols import *
 from adan.aipm import main_predictive
 
-df=pd.read_csv("auto_mpg/auto_mpg.csv")
+df=pd.read_csv("data/auto_mpg/auto_mpg.csv")
 target_name='V1'
 task='regression'
 
@@ -27,13 +27,12 @@ task='regression'
 # preds2=model['model'].evaluate(df)
 # np.corrcoef(preds1,preds2)[0][1]
 
-#Deep automl function
-df=pd.read_csv("auto_mpg/auto_mpg.csv")
-target_name='V1'
-task='regression'
-df2, target,scaler,centerer,categorical_vars,filler,log,\
-target_category_mapper,numerical_cols,components,pca_object,bad_target_values=\
-prepareTrainData(dataframe=df,target_name=target_name,task=task)
+
+df2, target,scaler,centerer,categorical_vars,filler,log,target_category_mapper,numerical_cols,components,pca_object,bad_target_values=prepareTrainData(dataframe=df,target_name=target_name,task=task)
               
 automl=main_predictive.predictor_main(df2,target)
-results=automl.train_evaluate_models(optimizer_type='hypersearch',optimizer_params={},models='lightweight')
+                                      
+
+
+results=automl.train_evaluate_models(optimizer_type='hypersearch',
+                                          optimizer_params={},models='lightweight')

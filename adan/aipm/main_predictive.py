@@ -14,6 +14,7 @@ from adan.aipm.optimizers.keras_nn import *
 from adan.aipm.optimizers.lgbmOptimizer import *
 from lightgbm import LGBMClassifier,LGBMRegressor
 from adan.aidc.feature_selection import cbfSelectionNumba
+from typing import Union,List
 
 
 def get_prediction_correlations(models,train,target,probability=False,task=None,metric=None,n_folds=3):
@@ -54,7 +55,8 @@ def choose_models(cor_model_results,percentile):
     return final
 
 class predictor_main(object):
-    def __init__(self,train,target,test_train=[],test_target=[],task="regression"):
+    def __init__(self,train:Union[pd.DataFrame,List],target:Union[pd.Series,List],test_train:Union[pd.DataFrame,List]=[],
+                 test_target:Union[pd.Series,List]=[],task:str="regression"):
         """
         power:the power determines how much computational power is going to be used (from 1 to 5)
 

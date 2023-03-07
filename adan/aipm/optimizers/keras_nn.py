@@ -3,8 +3,8 @@ from sklearn import preprocessing
 import tensorflow as tf
 from tensorflow.keras.layers import *
 from tensorflow.keras.models import *
-from keras.layers.advanced_activations import PReLU
-from keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import *
+from tensorflow.keras.callbacks import EarlyStopping
 from adan.metrics.regression import *
 from adan.metrics.classification import *
 from adan.metrics.metrics_utilities import *

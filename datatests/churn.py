@@ -48,10 +48,10 @@ feats=run_automl_models(df,'cancel_target','classification',num_iterations=3)
 #paok=run_all(df,'cancel_target',n_folds=-1,test_perc=0.05,task='classification',allowed_time=50)
 
 
-import autosklearn.classification
-cls = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=60)
+# import autosklearn.classification
+# cls = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=60)
 
-X_train=df.drop('cancel_target',axis=1)
-y_train=df['cancel_target']
-cls.fit(X_train, y_train)
+# X_train=df.drop('cancel_target',axis=1)
+# y_train=df['cancel_target']
+# cls.fit(X_train, y_train)
 #predictions = cls.predict(X_test)
