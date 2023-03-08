@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from sklearn import linear_model
-from sklearn import *
 import numpy as np
 from adan.aiem.symbolic_conversion import convertIndividualsToEqs,convertToEquation
 from sympy import sympify,simplify,together

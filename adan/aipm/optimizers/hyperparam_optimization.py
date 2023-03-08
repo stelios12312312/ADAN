@@ -14,6 +14,7 @@ import sklearn
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.compose import make_column_selector
+from typing import Callable,List,Dict
 
 def gprSwarmOptim_helper(train,target,max_evals,lb,ub,swarmsize=100):
     """
@@ -135,9 +136,9 @@ def assertConstraints(lb,ub,values):
     return dummy
 
 
-def hyperOptim(model,points,results,train,target,param_grid,constraints,types,
-               n_folds=5,max_evals=20,tolerance=-1,n_jobs=1,metric=corrNumba,
-               population=100,optimizer=rfCMAOptim_helper):
+def hyperOptim(model,points,results,train,target:List,param_grid:Dict,constraints:List,types,
+               n_folds=5,max_evals=20,tolerance:float=-1,n_jobs:int=1,metric:Callable=corrNumba,
+               population:int=100,optimizer=rfCMAOptim_helper,verbose=True):
     """
     Runs a hyperparameter optimization routine. The model is executed a number of N times, 
     the hyperparameter surface is learned by an ML algorithm (default random forest)
@@ -147,6 +148,13 @@ def hyperOptim(model,points,results,train,target,param_grid,constraints,types,
     parameters are tried, they are added as a datapoint and the process is repeated.
 
     based on ideas first exposed at: https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization.pdf
+    
+    
+    tolerance: If the difference in improvement is below tolerance, then the process stops
+    
+    constraints: 
+    
+    metric: A function that is used to evaluate performance. Default is corrNumba
     """
 #    try:
 #        points=points.tolist()
@@ -161,24 +169,34 @@ def hyperOptim(model,points,results,train,target,param_grid,constraints,types,
     param_names=points.columns.tolist()
     lb,ub=makeConstraints(param_names=param_names, constraints=constraints)
     for i in range(0,max_evals):
-        print("******************************************************")
-        print('runnin hyperoptim evaluation number '+str(i) +' out of a total of '+str(max_evals))
+        
+        if verbose:
+            print("******************************************************")
+            print('runnin hyperoptim evaluation number '+str(i) +' out of a total of '+str(max_evals))
+        
         params_optimized=optimizer(points,results,max_evals,lb,ub,population)
         values=params_optimized[0]
         values=assertConstraints(lb,ub,values)
-        print('proposal has a predicted score of:'+str(params_optimized[1]))
-        print('proposal is : '+str(param_names)+" : "+str(values))
+        
+        if verbose:
+            print('proposal has a predicted score of:'+str(params_optimized[1]))
+            print('proposal is : '+str(param_names)+" : "+str(values))
+        
         new_points,new_results=runModel(model=model,params=pd.DataFrame([values],columns=param_names),train=train,target=target,n_folds=n_folds,n_jobs=n_jobs,types=types,metric=metric)
-        print("new points are: " + str(new_points))
+        
+        if verbose:
+            print("new points are: " + str(new_points))
         points=points.append(new_points, ignore_index=True)
         results.append(new_results)
 
         delta=abs(new_results-max(results))
         if delta<tolerance:
-            print("delta below tolerance. stopping optimization.")
+            if verbose:
+                print("delta below tolerance. stopping optimization.")
             break
-
-        print('best result is :'+str(max(results)))
+        
+        if verbose:
+            print('best result is :'+str(max(results)))
 
     points=np.array(points)
     results=np.array(results)

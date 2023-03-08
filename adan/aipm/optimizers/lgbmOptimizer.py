@@ -9,7 +9,7 @@ from lightgbm import LGBMClassifier,LGBMRegressor
 
 
 class lightGBMOptimizer(Optimizer):
-    def __init__(self,train,target,task,ratio_evals=20,metric=[],n_jobs=1,randomize=True,boosting='gbdt'):
+    def __init__(self,train,target,task,ratio_evals=20,metric=None,n_jobs=1,randomize=True,boosting='gbdt'):
         self.ratio_evals=ratio_evals
         self.n_jobs=n_jobs
         if task=="regression":

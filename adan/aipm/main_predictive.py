@@ -85,10 +85,14 @@ class predictor_main(object):
 
 
 
-    def train_evaluate_models(self,models=None,generations=10,population=10,probability=False,metric=None,
-                              ratio_evals=10,optimizer_type='GA',
+    def train_evaluate_models(self,models:List=None,generations:int=10,population:int=10,metric=None,
+                              ratio_evals:int=10,optimizer_type='GA',
                               optimizer_params={'generations':10,'population':10}):
         """
+        models: List of models to use for the optimisation process. Each memebr of the list needs to inherit from the Optimizer class.
+        
+        optimizer_type: Choices include 'GA' and 'hypersearch'
+        
         ratio_evals: Defines how many cut-offs to create when creating the parameter matrix (for each param). Higher number
         leads to more granular hyperparam presets.
         """

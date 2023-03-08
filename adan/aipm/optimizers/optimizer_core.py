@@ -7,15 +7,47 @@ from adan.aipm.optimizers.ga_hyperparam import *
 from sklearn.model_selection import StratifiedKFold, KFold
 from adan.metrics.metrics_utilities import *
 from adan.aipm.optimizers import hyperparam_optimization
-from adan.aipm.optimizers.hyperparam_optimization import *
+from adan.aipm.optimizers.hyperparam_optimization import gridSearch,runModel
+from typing import Dict,List,Callable
 import abc
+import pandas as pd
 
 class Optimizer(object):
     """
-    Core class for optimisation. All model-speciic optimisation protcols must implement it.
+    Core class for optimisation. All model-specific optimisation protcols must implement it.
     """
     
-    def __init__(self,model,param_grid,train,target,task,constraints={},types={},randomize=True,metric=None):
+    def __init__(self,model,param_grid:Dict,train,target,task:str,constraints:Dict={},types={},randomize=True,metric:Callable=None):
+        """
+        
+
+        Parameters
+        ----------
+        model : TYPE
+            DESCRIPTION.
+        param_grid : Dict
+            Parameter grid (e.g. like in grid search by sklearn).
+        train : TYPE
+            DESCRIPTION.
+        target : TYPE
+            DESCRIPTION.
+        task : str
+            Regression or classification.
+        constraints : dictionary, optional
+            Dictionary of the format {'parameter':(lower_bound,upper_bound). The default is {}.
+        types : dictionary, optional
+            Type of each parameter, corresponding to the constraints. E.g. {'n_trees':int}. The default is {}.
+        randomize : bool, optional
+            If True, the grid will be randomised. The default is True.
+        metric : Callable, optional
+            The type of metric to use. If None it defaults to a mix of metrics for either 
+            regression or classification (depending on the task)
+
+        Returns
+        -------
+        None.
+
+        """
         self.model=model    
         self.types=types
         self.train=train
@@ -64,7 +96,20 @@ class Optimizer(object):
         return points,results
 
 
-    def optimizeModelHyperparam(self,max_evals=10,population=100,n_folds=3,randomize=True,initial_dataset=None,tolerance=0.01):       
+    def optimizeModelHyperparam(self,max_evals:int=10,population:int=100,n_folds:int=3,randomize:bool=True,
+                                initial_dataset:List=None,tolerance:float=0.01):       
+        
+        """
+        max_evals: maximum number of evaluations
+        
+        initial_dataset: This is an list of values in the form [(param,value)] which can be used as a starting point
+        
+        randomize (bool): Whether to randomise the list of parameters or not.
+        
+        Returns: a dictionary with metrics, best model and the parameters
+        
+        """
+        
         if initial_dataset is None:
             points,results=self._gridSearch(max_evals=max_evals,n_folds=n_folds)
         else:         
@@ -75,6 +120,7 @@ class Optimizer(object):
                               max_evals=max_evals,constraints=self.constraints,tolerance=tolerance,
                               n_folds=n_folds,types=self.types,
                               metric=self.metric,population=population)
+
                               
         self.model.set_params(**final_params)
 

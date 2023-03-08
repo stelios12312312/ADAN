@@ -15,13 +15,13 @@ Created on Wed Jun 12 10:52:13 2019
 """
 
 import os 
-import cdt
+#import cdt
 # cdt.SETTINGS.rpath=os.environ['RSCRIPT_PATH']
 #Line used by Stelios where running on his laptop
 # cdt.SETTINGS.rpath='/Library/Frameworks/R.framework/Resources/RScript'
 import networkx as nx
-import dowhy
-from dowhy import CausalModel
+#import dowhy
+#from dowhy import CausalModel
 import pandas as pd
 import numpy as np
 
