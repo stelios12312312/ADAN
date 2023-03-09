@@ -40,7 +40,7 @@ def gprSwarmOptim_helper(train,target,max_evals,lb,ub,swarmsize=100):
     return (xopt[0],-1*xopt[1])
 
 
-def rfCMAOptim_helper(train,target,max_evals,lb,ub,population=500,ngen=10):
+def rfCMAOptim_helper(train,target,max_evals,lb:List,ub:List,population:int=500,ngen:int=10):
     """
     optimizer for hyperOptim. Uses a random forest along with CMA.
     https://deap.readthedocs.io/en/master/examples/cmaes.html
@@ -97,7 +97,8 @@ def rfCMAOptim_helper(train,target,max_evals,lb,ub,population=500,ngen=10):
     
     return (hof[0],evaluator(hof[0]))
 
-def optimizeModel(model,params,train,target,lb,ub,types,ratio_evals=5,max_evals=-1,nfolds=3,tolerance=-1,n_jobs=1,max_evals_optim=10,randomize=True,metric=corrNumba,population=100):
+def optimizeModel(model,params,train,target,lb,ub,types,ratio_evals=5,max_evals=-1,nfolds=3,tolerance=-1,n_jobs=1,
+                  max_evals_optim=10,randomize=True,metric=corrNumba,population=100):
 
     points,results=gridSearch(model=model,param_grid=params,train=train,target=target,max_evals=max_evals,ratio_evals=ratio_evals,nfolds=nfolds,n_jobs=n_jobs,types=types,randomize=randomize,metric=metric)    
     final_params=hyperOptim(model=model,points=points,results=results,train=train,target=target,params=params,max_evals=max_evals_optim,lb=lb,ub=ub,tolerance=tolerance,nfolds=nfolds,types=types,metric=metric,population=population)    
@@ -106,6 +107,10 @@ def optimizeModel(model,params,train,target,lb,ub,types,ratio_evals=5,max_evals=
     return calcMetricsRegression(model,train,target,nfolds),model
 
 def makeConstraints(param_names,constraints):
+    """
+    Helper function that creates a list of lower and upper bound from a list of parameter
+    names and the constraints
+    """
     lb=[]
     ub=[]
     for k in param_names:
@@ -167,6 +172,7 @@ def hyperOptim(model,points,results,train,target:List,param_grid:Dict,constraint
 #        pass
 
     param_names=points.columns.tolist()
+    #create upper and lower bounds
     lb,ub=makeConstraints(param_names=param_names, constraints=constraints)
     for i in range(0,max_evals):
         
@@ -182,7 +188,9 @@ def hyperOptim(model,points,results,train,target:List,param_grid:Dict,constraint
             print('proposal has a predicted score of:'+str(params_optimized[1]))
             print('proposal is : '+str(param_names)+" : "+str(values))
         
-        new_points,new_results=runModel(model=model,params=pd.DataFrame([values],columns=param_names),train=train,target=target,n_folds=n_folds,n_jobs=n_jobs,types=types,metric=metric)
+        #fits the model with the current parameters and collects one more datapoint
+        new_points,new_results=runModel(model=model,params=pd.DataFrame([values],columns=param_names),
+                                        train=train,target=target,n_folds=n_folds,n_jobs=n_jobs,types=types,metric=metric)
         
         if verbose:
             print("new points are: " + str(new_points))

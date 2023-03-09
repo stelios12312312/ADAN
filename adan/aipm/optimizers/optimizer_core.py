@@ -3,7 +3,7 @@ from adan.metrics.regression import *
 from adan.metrics.classification import *
 from sklearn.model_selection import ParameterGrid
 from adan.aipm.optimizers.optimizers_helpers import *
-from adan.aipm.optimizers.ga_hyperparam import *
+from adan.aipm.optimizers.ga_hyperparam import EvolutionaryAlgorithmSearchCV
 from sklearn.model_selection import StratifiedKFold, KFold
 from adan.metrics.metrics_utilities import *
 from adan.aipm.optimizers import hyperparam_optimization
@@ -96,20 +96,29 @@ class Optimizer(object):
         return points,results
 
 
-    def optimizeModelHyperparam(self,max_evals:int=10,population:int=100,n_folds:int=3,randomize:bool=True,
+    def optimizeModelHyperparam(self,max_evals:int=10,population:int=100,n_folds:int=3,
+                                randomize:bool=True,
                                 initial_dataset:List=None,tolerance:float=0.01):       
         
         """
         max_evals: maximum number of evaluations
         
+        n_folds: The number of folds for cross-validation
+        
         initial_dataset: This is an list of values in the form [(param,value)] which can be used as a starting point
         
         randomize (bool): Whether to randomise the list of parameters or not.
+        
+        population (int): The population for the genetic algorithm
+        
+        tolerance (float): this parameter is used by the hyperparameter optimization. If the difference is less than tolerance for successive
+        iterations, then we stop.
         
         Returns: a dictionary with metrics, best model and the parameters
         
         """
         
+        #if there is no initial set of points, then create a grid, and the perform grid search to set up the initial dataset
         if initial_dataset is None:
             points,results=self._gridSearch(max_evals=max_evals,n_folds=n_folds)
         else:         
@@ -162,8 +171,9 @@ class Optimizer(object):
         return scorer
         
 
-    def optimizeModelGA(self,population=10,tournament_size=3,mutation_prob=0.2,generations=20,verbose=True,
-                        n_folds=3,fit_params=None,n_jobs=1,probability=False,**kwargs):
+    def optimizeModelGA(self,population:int=10,tournament_size:int=3,mutation_prob:float=0.2,generations:int=20,
+                        verbose:bool=True,
+                        n_folds:int=3,fit_params=None,n_jobs:int=1,probability=False,**kwargs):
 
         cv = EvolutionaryAlgorithmSearchCV(estimator=self.model,
                                            params=self.param_grid,

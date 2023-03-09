@@ -18,6 +18,17 @@ from typing import Union,List
 
 
 def get_prediction_correlations(models,train,target,probability=False,task=None,metric=None,n_folds=3):
+    """
+    Gets a score for how correlated the predictions of the models are
+    
+    models: List of optimizer model objects
+    
+    train: the train array
+        
+    target:  the target array
+        
+    probability: if True then use predict_proba to calculate probabilities
+    """
     results=OrderedDict()
     for m in models:
         results[m]=[]
